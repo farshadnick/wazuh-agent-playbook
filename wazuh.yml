@@ -1,0 +1,35 @@
+---
+- hosts: srv3
+  become: true
+  environment:
+    WAZUH_MANAGER: "192.168.10.54"
+  tasks:
+    - name: download sources
+      get_url:
+        url: https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.2.4-1_amd64.deb
+        dest: /tmp/wazuh-agent-4.2.4.deb
+
+    - name: Adding the path in the bashrc files
+      lineinfile:
+        dest:  /etc/profile
+        line:  export WAZUH_MANAGER=192.168.10.54
+        insertafter: 'EOF'
+        state: present
+
+
+    - name: echo
+      shell: echo $WAZUH_MANAGER
+      register: __output
+
+    - name: debug
+      debug:
+        var: __output
+
+    - name: Install wazuh
+      apt:
+        deb: /tmp/wazuh-agent-4.2.4.deb
+
+    - name:  Start wazuh service
+      service:
+        name: wazuh-agent
+        state: started
