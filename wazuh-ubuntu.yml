@@ -2,7 +2,7 @@
 - hosts: srv3
   become: true
   environment:
-    WAZUH_MANAGER: "192.168.10.54"
+    WAZUH_MANAGER: <YOUR-WAZUH_IP>
   tasks:
     - name: download sources
       get_url:
@@ -12,7 +12,7 @@
     - name: Adding the path in the bashrc files
       lineinfile:
         dest:  /etc/profile
-        line:  export WAZUH_MANAGER=192.168.10.54
+        line:  export WAZUH_MANAGER=<YOUR-WAZUH_IP>
         insertafter: 'EOF'
         state: present
 
